@@ -13,3 +13,4 @@ common = { path = "./common" }
 employee = { path = "./employee" }
 rocket = { version = "0.5.1", features = ["json"] }
 serde = { version = "1.0.159", features = ["derive"] }
+dotenv = "0.15.0"

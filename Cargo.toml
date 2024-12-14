@@ -9,6 +9,7 @@ members = ["common", "employee"]
 [lib]
 
 [dependencies]
+common = { path = "./common" }
+employee = { path = "./employee" }
 rocket = { version = "0.5.1", features = ["json"] }
 serde = { version = "1.0.159", features = ["derive"] }
-employee ={ path = "./employee"}

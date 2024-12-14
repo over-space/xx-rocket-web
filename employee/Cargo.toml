@@ -1,0 +1,10 @@
+[package]
+name = "employee"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+
+[dependencies]
+rocket = { version = "0.5.1", features = ["json"] }
+common = { path = "../common" }

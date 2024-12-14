@@ -1,0 +1,14 @@
+[package]
+name = "xx-rocket-web"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+members = ["common", "employee"]
+
+[lib]
+
+[dependencies]
+rocket = { version = "0.5.1", features = ["json"] }
+serde = { version = "1.0.159", features = ["derive"] }
+employee ={ path = "./employee"}

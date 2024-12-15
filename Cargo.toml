@@ -4,13 +4,14 @@ version = "0.1.0"
 edition = "2021"
 
 [workspace]
-members = ["common", "employee"]
+members = ["common", "config", "employee"]
 
 [lib]
 
 [dependencies]
 common = { path = "./common" }
+config = { path = "./config" }
+dotenv = "0.15.0"
 employee = { path = "./employee" }
 rocket = { version = "0.5.1", features = ["json"] }
 serde = { version = "1.0.159", features = ["derive"] }
-dotenv = "0.15.0"

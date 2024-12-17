@@ -12,6 +12,14 @@ impl<T> ResponseBody<T> {
         ResponseBody::new(0, "success".to_owned(), data)
     }
 
+    pub fn new_with_vec(data: Vec<T>) -> ResponseBody<Vec<T>> {
+        ResponseBody {
+            code: 0,
+            message: "success".to_owned(),
+            data: Some(data),
+        }
+    }
+
     pub fn new_with_none_data(code: i32, message: String) -> Self {
         ResponseBody::new(code, message, None)
     }
@@ -23,6 +31,7 @@ impl<T> ResponseBody<T> {
             data,
         }
     }
+
     pub fn fail(message: String) -> Self {
         ResponseBody::new_with_none_data(1000, message)
     }

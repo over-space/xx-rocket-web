@@ -1,8 +1,8 @@
 use common::common::ResponseBody;
-use rocket::{get, serde::json::Json};
+use rocket::{get, serde::json::Json, State};
+use sea_orm::DatabaseConnection;
 
-use crate::employee::EmployeeEntity;
-
+use crate::{employee::EmployeeEntity, employee_dao};
 
 #[get("/none?<age>")]
 pub fn none(age: u8) -> Json<ResponseBody<EmployeeEntity>> {
@@ -23,33 +23,54 @@ pub fn none(age: u8) -> Json<ResponseBody<EmployeeEntity>> {
     Json(body)
 }
 
-#[get("/get")]
-pub fn get_employee() -> Json<ResponseBody<EmployeeEntity>> {
-    let employee = Some(EmployeeEntity {
-        id: 1,
-        name: "John Doe".to_string(),
-        age: 30,
-        email: "john.doe@example.com".to_string(),
-    });
-    let body = ResponseBody::success(employee);
+#[get("/get?<id>")]
+pub async fn get_employee(
+    db: &State<DatabaseConnection>,
+    id: u32,
+) -> Json<ResponseBody<EmployeeEntity>> {
+    // let employee = Some(EmployeeEntity {
+    //     id: 1,
+    //     name: "John Doe".to_string(),
+    //     age: 30,
+    //     email: "john.doe@example.com".to_string(),
+    // });
+    // let body = ResponseBody::success(employee);
+
+    let emp = employee_dao::get_employee(db, id).await;
+    let body = match emp {
+        Ok(Some(employee)) => ResponseBody::success(Some(employee)),
+        Ok(None) => ResponseBody::default(),
+        Err(msg) => ResponseBody::fail(msg.to_string()),
+    };
     Json(body)
 }
 
-#[get("/list")]
-pub fn list_employee() -> Json<ResponseBody<Vec<EmployeeEntity>>> {
-    let employee1 = EmployeeEntity {
-        id: 1,
-        name: "John Doe".to_string(),
-        age: 30,
-        email: "john.doe@example.com".to_string(),
+#[get("/list?<page>&<size>")]
+pub async fn list_employee(
+    db: &State<DatabaseConnection>,
+    page: u64,
+    size: u64,
+) -> Json<ResponseBody<Vec<EmployeeEntity>>> {
+    // let employee1 = EmployeeEntity {
+    //     id: 1,
+    //     name: "John Doe".to_string(),
+    //     age: 30,
+    //     email: "john.doe@example.com".to_string(),
+    // };
+    // let employee2 = EmployeeEntity {
+    //     id: 2,
+    //     name: "Jerry".to_string(),
+    //     age: 21,
+    //     email: "john.doe@example.com".to_string(),
+    // };
+    // let list = Some(vec![employee1, employee2]);
+    // let body = ResponseBody::success(list);
+    // Json(body)
+
+    let emps = employee_dao::list_employee(db, page, size).await;
+    let body = match emps {
+        Ok(list) => ResponseBody::new_with_vec(list),
+        Err(msg) => ResponseBody::fail(msg.to_string()),
     };
-    let employee2 = EmployeeEntity {
-        id: 2,
-        name: "Jerry".to_string(),
-        age: 21,
-        email: "john.doe@example.com".to_string(),
-    };
-    let list = Some(vec![employee1, employee2]);
-    let body = ResponseBody::success(list);
     Json(body)
 }

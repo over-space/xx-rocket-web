@@ -1,3 +1,4 @@
+use rocket::{response::Responder, serde::json::Json};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -40,5 +41,12 @@ impl<T> ResponseBody<T> {
 impl<T> Default for ResponseBody<T> {
     fn default() -> Self {
         ResponseBody::success(None)
+    }
+}
+
+#[rocket::async_trait]
+impl<'r, T: serde::Serialize> Responder<'r, 'static> for ResponseBody<T> {
+    fn respond_to(self, req: &'r rocket::Request<'_>) -> rocket::response::Result<'static> {
+        Json(self).respond_to(req)
     }
 }

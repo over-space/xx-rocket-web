@@ -24,10 +24,7 @@ pub fn none(age: u8) -> Json<ResponseBody<EmployeeEntity>> {
 }
 
 #[get("/get?<id>")]
-pub async fn get_employee(
-    db: &State<DatabaseConnection>,
-    id: u32,
-) -> Json<ResponseBody<EmployeeEntity>> {
+pub async fn get_employee(db: &State<DatabaseConnection>, id: u32) -> ResponseBody<EmployeeEntity> {
     // let employee = Some(EmployeeEntity {
     //     id: 1,
     //     name: "John Doe".to_string(),
@@ -37,12 +34,11 @@ pub async fn get_employee(
     // let body = ResponseBody::success(employee);
 
     let emp = employee_dao::get_employee(db, id).await;
-    let body = match emp {
+    match emp {
         Ok(Some(employee)) => ResponseBody::success(Some(employee)),
         Ok(None) => ResponseBody::default(),
         Err(msg) => ResponseBody::fail(msg.to_string()),
-    };
-    Json(body)
+    }
 }
 
 #[get("/list?<page>&<size>")]
@@ -50,7 +46,7 @@ pub async fn list_employee(
     db: &State<DatabaseConnection>,
     page: u64,
     size: u64,
-) -> Json<ResponseBody<Vec<EmployeeEntity>>> {
+) -> ResponseBody<Vec<EmployeeEntity>> {
     // let employee1 = EmployeeEntity {
     //     id: 1,
     //     name: "John Doe".to_string(),
@@ -68,9 +64,8 @@ pub async fn list_employee(
     // Json(body)
 
     let emps = employee_dao::list_employee(db, page, size).await;
-    let body = match emps {
+    match emps {
         Ok(list) => ResponseBody::new_with_vec(list),
         Err(msg) => ResponseBody::fail(msg.to_string()),
-    };
-    Json(body)
+    }
 }

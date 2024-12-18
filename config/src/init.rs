@@ -1,4 +1,4 @@
-use std::{env, sync::Arc};
+use std::env;
 
 use sea_orm::Database;
 
@@ -14,11 +14,7 @@ pub async fn init_mysq_pool() -> sea_orm::DatabaseConnection {
 
     println!("database_url: {}", database_url);
 
-    let db = Database::connect(database_url)
+    Database::connect(database_url)
         .await
-        .expect("Failed to connect to database");
-
-    println!("db: {:?}", db);
-
-    db
+        .expect("Failed to connect to database")
 }
